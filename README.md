@@ -8,6 +8,8 @@ SKI-3D is a retro-styled 3D downhill skiing game built with
 The game focuses on fast arcade gameplay, simple controls, and
 experimental AI "autobot" modes.
 
+## Play it now: https://pemmyz.github.io/js_laskettelu_redux/
+
 ------------------------------------------------------------------------
 
 ## Screenshots
