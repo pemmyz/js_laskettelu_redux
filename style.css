@@ -3,11 +3,23 @@ body {
     color: #fff;
     font-family: 'Press Start 2P', cursive;
     margin: 0;
-    overflow: hidden;
+    overflow: auto; /* Default scroll behavior */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    width: 100vw;
+}
+
+/* --- MOBILE MODE LOCK & TIGHTNESS --- */
+body.mobile-mode {
+    overflow: hidden; /* Disables scrollbars */
+    touch-action: none; /* Disables browser gestures */
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
 }
 
 #main-wrapper {
@@ -23,6 +35,16 @@ body {
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
     border: 8px solid #fff;
     background: #87CEEB; 
+    transform-origin: center center; /* Important for scaling from the middle */
+    flex-shrink: 0;
+}
+
+/* Remove borders & hints to make it tighter when full screen */
+body.mobile-mode #game-container {
+    border: none;
+}
+body.mobile-mode #help-hint {
+    display: none;
 }
 
 #help-hint {
@@ -174,4 +196,69 @@ button:active {
 .skier-option.selected { 
     border-color: #f1c40f; 
     background: rgba(241, 196, 15, 0.2);
+}
+
+/* --- MOBILE CONTROLS UI --- */
+#mobile-btn {
+    position: fixed;
+    top: 10px; left: 10px;
+    z-index: 2000;
+    background: #3498db;
+    color: white;
+    border: 2px solid white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    padding: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #1f618d;
+}
+body.mobile-mode #mobile-btn { display: none; }
+
+#mobile-controls {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; /* Let clicks pass through to empty space */
+    z-index: 3000;
+    display: none; /* Hidden by default */
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Show controls only when in mobile mode */
+body.mobile-mode #mobile-controls {
+    display: flex;
+}
+
+.mobile-control-btn {
+    pointer-events: auto; /* Re-enable clicks for buttons */
+    width: 140px; height: 140px; /* 2x Bigger */
+    background: rgba(255,255,255,0.15);
+    border: 4px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    color: white;
+    font-size: 60px; /* 2x Bigger */
+    display: flex; justify-content: center; align-items: center;
+    user-select: none;
+    backdrop-filter: blur(4px);
+    margin-bottom: 20px;
+    transition: transform 0.1s, background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    font-family: Arial, sans-serif;
+}
+.mobile-control-btn:active {
+    background: rgba(255,255,255,0.4);
+    transform: scale(0.95);
+}
+
+#mobile-dpad {
+    display: flex;
+    gap: 15px; /* Spacing between Left/Right */
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+#mobile-action {
+    margin-right: 10px;
+    margin-bottom: 10px;
 }

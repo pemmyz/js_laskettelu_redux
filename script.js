@@ -558,3 +558,86 @@ document.getElementById('customize-button').onclick = () => {
 document.querySelectorAll('.close-button').forEach(b => b.onclick = () => {
     document.querySelectorAll('.modal').forEach(m=>m.style.display='none');
 });
+
+
+// --- FULLSCREEN & MOBILE CONTROLS LOGIC ---
+
+const mobileToggleBtn = document.getElementById('mobile-btn');
+const mobileControls = document.getElementById('mobile-controls');
+const mobileLeftBtn = document.getElementById('mobile-left');
+const mobileRightBtn = document.getElementById('mobile-right');
+const mobileDownBtn = document.getElementById('mobile-down');
+const screenElement = document.getElementById('game-container'); 
+
+function scaleGame() {
+    const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+    
+    if (isFullscreen) {
+        const baseWidth = 800; // Original fixed width
+        const baseHeight = 600; // Original fixed height
+        
+        // Calculate the scale to fit the window while maintaining aspect ratio
+        const scale = Math.min(
+            window.innerWidth / baseWidth,
+            window.innerHeight / baseHeight
+        );
+        
+        screenElement.style.transform = `scale(${scale})`;
+        document.body.classList.add('mobile-mode'); // Activates CSS lock
+    } else {
+        screenElement.style.transform = 'none'; 
+        document.body.classList.remove('mobile-mode');
+    }
+}
+
+function goFull() {
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
+
+window.addEventListener("resize", scaleGame);
+window.addEventListener("fullscreenchange", scaleGame);
+window.addEventListener("webkitfullscreenchange", scaleGame);
+scaleGame();
+
+if (mobileToggleBtn) mobileToggleBtn.addEventListener('click', goFull);
+
+function setupMobileControls() {
+    if (!mobileControls) return;
+
+    // Helper to map touch/mouse events directly to the player.dx logic
+    const addControlListener = (element, actionPress, actionRelease) => {
+        const pressHandler = (e) => {
+            if(e.cancelable) e.preventDefault(); 
+            if (!gameRunning || autobotEnabled || !player) return;
+            actionPress();
+        };
+        const releaseHandler = (e) => {
+            if(e.cancelable) e.preventDefault();
+            if (!gameRunning || autobotEnabled || !player) return;
+            actionRelease();
+        };
+
+        // Touch Events
+        element.addEventListener('touchstart', pressHandler, { passive: false });
+        element.addEventListener('touchend', releaseHandler, { passive: false });
+        element.addEventListener('touchcancel', releaseHandler, { passive: false });
+        
+        // Mouse Events (for testing on desktop)
+        element.addEventListener('mousedown', pressHandler);
+        element.addEventListener('mouseup', releaseHandler);
+        element.addEventListener('mouseleave', (e) => {
+            if (e.buttons === 1) { releaseHandler(e); }
+        });
+    };
+
+    // Hold left/right to steer. Releasing acts as brake (goes straight)
+    addControlListener(mobileLeftBtn, () => player.dx = -PLAYER_SPEED_X, () => player.dx = 0);
+    addControlListener(mobileRightBtn, () => player.dx = PLAYER_SPEED_X, () => player.dx = 0);
+    
+    // Tap down/action to manually brake
+    addControlListener(mobileDownBtn, () => player.dx = 0, () => {});
+}
+
+setupMobileControls();

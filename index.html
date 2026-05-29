@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Updated viewport for mobile lock -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JS-Ski: Sunny Slopes</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <!-- Fullscreen Toggle Button -->
+    <button id="mobile-btn">📱 Fullscreen</button>
 
     <div id="main-wrapper">
         <div id="game-container">
@@ -85,6 +89,17 @@
         </div>
 
         <div id="help-hint">Press <span class="key">H</span> -key for Help</div>
+    </div>
+
+    <!-- MOBILE TOUCH CONTROLS OVERLAY -->
+    <div id="mobile-controls">
+        <div id="mobile-dpad">
+            <button id="mobile-left" class="mobile-control-btn">◀</button>
+            <button id="mobile-right" class="mobile-control-btn">▶</button>
+        </div>
+        <div id="mobile-action">
+            <button id="mobile-down" class="mobile-control-btn">▼</button>
+        </div>
     </div>
 
     <script type="module" src="script.js"></script>
