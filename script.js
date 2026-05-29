@@ -436,7 +436,13 @@ function checkCollisions() {
     
     for (let i = obstacles.length - 1; i >= 0; i--) {
         const obs = obstacles[i];
-        const oRect = { l: obs.x + 5, r: obs.x + obs.width - 5, t: obs.y + 5, b: obs.y + obs.height - 5 };
+        let oRect = { l: obs.x + 5, r: obs.x + obs.width - 5, t: obs.y + 5, b: obs.y + obs.height - 5 };
+
+        // Expand the horizontal hitbox for gates so clipping with one ski counts
+        if (obs.collisionType === 'gate') {
+            oRect.l -= 15;
+            oRect.r += 15;
+        }
 
         if (pRect.l < oRect.r && pRect.r > oRect.l && pRect.t < oRect.b && pRect.b > oRect.t) {
             if (player.isJumping && obs.collisionType === 'crash') continue; 
