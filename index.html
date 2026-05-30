@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- Updated viewport for mobile lock -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>JS-Ski: Sunny Slopes</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -14,7 +13,7 @@
     <button id="mobile-btn">📱 Fullscreen</button>
 
     <div id="main-wrapper">
-        <div id="game-container">
+        <div id="game-container" class="crt-effect">
             <div id="hud" style="display: none;">
                 <div id="left-hud">
                     <div id="score-display">Score: 0</div>
@@ -34,6 +33,7 @@
                 <div class="menu-options">
                     <button id="customize-button">Skin</button>
                     <button id="leaderboard-button">Ranks</button>
+                    <button id="options-button">Options</button>
                 </div>
             </div>
 
@@ -63,6 +63,18 @@
                 </div>
             </div>
 
+            <!-- OPTIONS MODAL -->
+            <div id="options-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">×</span>
+                    <h2>Options</h2>
+                    <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 15px;">
+                        <button id="toggle-crt-button" style="width: 100%; margin: 0;">CRT Filter: ON</button>
+                        <button id="toggle-theme-button" style="width: 100%; margin: 0;">Theme: VIBRANT</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- HELP MODAL -->
             <div id="help-modal" class="modal">
                 <div class="modal-content help-content">
@@ -76,8 +88,8 @@
                     <div class="help-section">
                         <h3>AUTOBOT AI</h3>
                         <p><span class="key">B</span> : Toggle ON/OFF</p>
-                        <p><span class="key">1</span> : <b>Gate Hunter</b> (Prioritizes Score)</p>
-                        <p><span class="key">2</span> : <b>Survivalist</b> (Prioritizes Safety)</p>
+                        <p><span class="key">1</span> : <b>Gate Hunter</b></p>
+                        <p><span class="key">2</span> : <b>Survivalist</b></p>
                     </div>
                     <div class="help-section">
                         <h3>SCORING</h3>
