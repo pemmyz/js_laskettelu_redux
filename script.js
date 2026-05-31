@@ -97,6 +97,7 @@ const GAME_SPEED_INCREMENT = 0.0005;
 const AUTOBOT_DETECTION_RANGE = 450;
 
 let gameRunning = false;
+let isPressingDown = false;
 let gameSpeedY, score, distance, highScore;
 let player, obstacles = [], yeti, yetiActive = false;
 let currentSkierChar = localStorage.getItem('skierChar') || SKIER_OPTIONS[0];
@@ -331,6 +332,7 @@ function startGame() {
     obstacles = [];
     
     gameRunning = true;
+    isPressingDown = false;
     gameSpeedY = GAME_INITIAL_SPEED_Y;
     score = 0; distance = 0;
     highScore = parseInt(localStorage.getItem('ski3dHighScore') || '0');
@@ -415,11 +417,24 @@ function animate() {
     if (autobotEnabled) runAutobot();
     
     player.update();
+
+    // Store base speed and boost it based on movement state
+    let baseSpeed = gameSpeedY;
+    if (player.dx === 0) {
+        if (isPressingDown) {
+            gameSpeedY *= 1.8; // Max boost when actively holding down
+        } else {
+            gameSpeedY *= 1.5; // Passive boost when going straight
+        }
+    }
+
     obstacles.forEach(o => o.update());
     
     distance += gameSpeedY / 20;
     score += gameSpeedY / 10;
-    gameSpeedY += GAME_SPEED_INCREMENT;
+    
+    // Restore base speed and apply the incremental difficulty increase
+    gameSpeedY = baseSpeed + GAME_SPEED_INCREMENT;
 
     spawnObstacles();
     checkCollisions();
@@ -459,9 +474,15 @@ window.addEventListener('keydown', (e) => {
 
     if (!gameRunning || autobotEnabled) return;
     
-    if (e.key === 'ArrowLeft') player.dx = -PLAYER_SPEED_X;
-    if (e.key === 'ArrowRight') player.dx = PLAYER_SPEED_X;
-    if (e.key === 'ArrowDown') player.dx = 0;
+    if (e.key === 'ArrowLeft') { player.dx = -PLAYER_SPEED_X; isPressingDown = false; }
+    if (e.key === 'ArrowRight') { player.dx = PLAYER_SPEED_X; isPressingDown = false; }
+    if (e.key === 'ArrowDown') { player.dx = 0; isPressingDown = true; }
+});
+
+window.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowDown') {
+        isPressingDown = false;
+    }
 });
 
 document.getElementById('start-button').onclick = startGame;
@@ -648,9 +669,19 @@ function setupMobileControls() {
         });
     };
 
-    addControlListener(mobileLeftBtn, () => player.dx = -PLAYER_SPEED_X, () => player.dx = 0);
-    addControlListener(mobileRightBtn, () => player.dx = PLAYER_SPEED_X, () => player.dx = 0);
-    addControlListener(mobileDownBtn, () => player.dx = 0, () => {});
+    // Keep moving left/right upon release, require pressing down to stop steering
+    addControlListener(mobileLeftBtn, 
+        () => { player.dx = -PLAYER_SPEED_X; isPressingDown = false; }, 
+        () => {}
+    );
+    addControlListener(mobileRightBtn, 
+        () => { player.dx = PLAYER_SPEED_X; isPressingDown = false; }, 
+        () => {}
+    );
+    addControlListener(mobileDownBtn, 
+        () => { player.dx = 0; isPressingDown = true; }, 
+        () => { isPressingDown = false; }
+    );
 }
 
 setupMobileControls();
